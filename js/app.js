@@ -2,10 +2,20 @@ var client = new BowlingApiClient('http://bowling-api.nextcapital.com/api');
 
 $('#complete_signup').click(function(){
 
-  localStorage.Email = $('#email').val();
-  localStorage.psword = $('#psword').val();
+	var email_text = $('#email').val();
+	var psword_text = $('#psword').val();
 
-  if (localStorage.Email && localStorage.psword) {
+	if (email_text == localStorage.Email) 
+		$('#advice').text("The email address you've entered is alreday in use");
+
+	else if (!email_text || !psword_text)
+		$('#advice').text("Both fields are required");
+
+   else {
+  	localStorage.Email = email_text;
+  	localStorage.psword = psword_text;
+
+//  if (localStorage.Email && localStorage.psword) {
 
   	 confirm("Thank you for signing up!");
 
@@ -22,8 +32,7 @@ $('#complete_signup').click(function(){
     }
   });
  }
- else
- 	$('#advice').text("Both fields are required");
+ //else	$('#advice').text("Both fields are required");
 
 });
 
@@ -32,15 +41,16 @@ $('#complete_login').click(function(){
 
 	var emailEntered = $('#email_entered').val();
 	var pinEntered = $('#psword_entered').val();
-	
+
   if (emailEntered && pinEntered) {
       
   if (emailEntered == localStorage.Email && pinEntered == localStorage.psword) {
    window.location.href="game.html";
  }
-
    else
    	$('#advice').text("Oops! Please double check your email and password!");
-
 }
+  else
+  	$('#advice').text("Both fields are required");
+
 });
