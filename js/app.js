@@ -1,29 +1,80 @@
+
+var state = 0;				// flag indicating whether the user has logged in
+var round = 0;              // round number; initialized to 0
+var cur_jackpot = 0; 		// current jackpot
+var who; 					// who gets to roll
+var justRolled = 0;     	// flag indicating whether a bowler just rolled
+var startingBalance = 50;   // 
+var tickets = [ ];          // an array that holds all the purchased tickets; initialized to empty
+var money = [50, 50, 50];   // an array that holds the starting balance of each player; initialized to empty
+
+
+$(document).ready(function(){
+
 var client = new BowlingApiClient('http://bowling-api.nextcapital.com/api');
 
-$('#complete_signup').click(function(){
+	$("button#signup_div").click(function() {
+   		$("div#createuser").toggle(300);
+	});
+
+	$("button#login_div").click(function() {
+   		$("div#loginuser").toggle(300);
+	});
+
+    $("button#about").click(function() {
+   		$("div.display").toggle(300);
+	});
+
+   $("#complete_signup").click(function(){ 
 
 	var email_text = $('#email').val();
 	var psword_text = $('#psword').val();
+   //  alert(localStorage.Email);
 
 	if (email_text == localStorage.Email) 
-		$('#advice').text("The email address you've entered is alreday in use");
+		$('#signup_msg').text("The email address you've entered is alreday in use");
 
 	else if (!email_text || !psword_text)
-		$('#advice').text("Both fields are required");
+		$('#signup_msg').text("Both fields are required");
 
-   else {
-  	localStorage.Email = email_text;
+ else {
+	localStorage.Email = email_text;
   	localStorage.psword = psword_text;
+  	state = 1;
 
-//  if (localStorage.Email && localStorage.psword) {
+    $("div#createuser").hide(300);
+    confirm("Success!");
+  	
+  	client.createUser({
+    email: email_text,
+    password: psword_text,
+    success: function(user) {
+     //console.log(user);
+     //alert("Thank you!");
+    },
+    error: function(xhr)  {
+      console.log(JSON.parse(xhr.responseText));
+    }
+  });
+ }
+}); // end of sign up
 
-  	 confirm("Thank you for signing up!");
 
-   window.location.assign("login.html");
+$('#complete_login').click(function(){
+	var emailEntered = $('#email_entered').val();
+	var pinEntered = $('#psword_entered').val();
 
-     client.createUser({
-    email: Email,
-    password: psword,
+  if (emailEntered && pinEntered) {
+      
+  if (emailEntered == localStorage.Email && pinEntered == localStorage.psword) {
+
+     confirm("Login success!");
+     $("div#loginuser").hide(300);
+  	state = 1;
+
+   client.loginUser({
+    email: localStorage.Email,
+    password: localStorage.psword,
     success: function(user) {
       console.log(user);
     },
@@ -31,26 +82,269 @@ $('#complete_signup').click(function(){
       console.log(JSON.parse(xhr.responseText));
     }
   });
- }
- //else	$('#advice').text("Both fields are required");
 
-});
-
-
-$('#complete_login').click(function(){
-
-	var emailEntered = $('#email_entered').val();
-	var pinEntered = $('#psword_entered').val();
-
-  if (emailEntered && pinEntered) {
-      
-  if (emailEntered == localStorage.Email && pinEntered == localStorage.psword) {
-   window.location.href="game.html";
  }
    else
-   	$('#advice').text("Oops! Please double check your email and password!");
+   	$('#login_msg').text("Oops! Please double check your email and password!");
 }
   else
-  	$('#advice').text("Both fields are required");
+  	$('#login_msg').text("Both fields are required");
 
-});
+}); // end of login
+
+$('#get_bowler').click(function(){
+    
+ if (state === 1) {
+ 	$("div.display_bowlers").toggle(300);
+   var content = "<ul id='bowler_list'>";
+
+    client.getBowlers({
+    success: function(bowlers) {
+      for (i=0; i<bowlers.length;i++) {
+      	content += "<li>" + bowlers[i].name + "</li>"; 
+      }
+      content += "</ul>";
+      $(".display_bowlers").html(content);
+    //  console.log(bowlers);
+    },
+    error: function(xhr) {
+      console.log(JSON.parse(xhr.responseText));
+    }
+  }); 
+}
+ else 
+ 	confirm("Oops! You need to login in order to play!");
+
+ }); // end of get bowler
+
+
+ $("#add_bowler").click(function() {
+
+   if (state === 1) {
+    $("div.add_bowler").toggle(300);
+
+    $("#complete_add_bowler").click(function() {
+		var bowler_name = $("#bowler_name").val();
+		if (bowler_name) { // also check whether the bowler already exists!
+
+			client.createBowler ({
+		    name: bowler_name,
+		    success: function(bowler) {
+		      console.log(bowler);
+		    },
+		    error: function(xhr)  {
+		      console.log(JSON.parse(xhr.responseText));
+		    }
+		  }); // end of createBowler
+		}
+		else
+			$("#add_bowler_msg").text("Please enter the name of the bowler");
+
+    });
+ }
+ else 
+ 	confirm("Oops! You need to login in order to play!");
+
+ }); // end of add bowler
+
+
+ $("#play_game").click(function() {
+     $("div.buy_tickets").toggle(300);
+     $("span#jackpot_val").text(cur_jackpot);
+
+ }); // end of play game
+
+
+ $("#draw_winner").click(function() {
+
+ 	if (cur_jackpot === 0) {
+ 		$("h3#jackpot").fadeTo(300, 0.2).fadeTo(300, 1).fadeTo(300, 0.2).fadeTo(300, 1).fadeTo(300, 0.2).fadeTo(300, 1);
+ 		confirm("Please first buy a ticket");
+ 	}
+
+  	else if (tickets.length < 3)
+   		confirm("At least 3 tickets need to be bought"); 
+   
+   else if (justRolled === 1)
+   	  confirm("Please buy a new ticket to proceed!");  
+
+  else {
+
+  	  // first draw a ticket randomly to decide which bowler gets to roll
+      var val = Math.floor(Math.random()*tickets.length);
+      who = tickets[val];
+      justRolled = 1;
+      round += 1;
+      confirm("Bowler " + who + " gets to roll!");    
+
+      // is the bowler lucky enough to get the strike? 
+      var strike = Math.ceil((Math.random())*6);
+      if (strike === 6) {
+      	 confirm("Strike!!! " + "Bowler " + who + " wins!");
+      	 startNewGame();
+      	 return;
+      }
+
+      // if no, then randomly determine what fraction of the jackpot the bowler wins
+      var amount = Math.floor(Math.random()*cur_jackpot);
+
+      // make sure the bowler gets something...
+      if (amount === 0) 
+      	amount = 1;
+
+      cur_jackpot -= amount;
+      $("span#jackpot_val").text(cur_jackpot);
+  
+      money[who-1] += amount;
+
+    var content = "<tr class='rows'><td>" + round + "</td>";
+
+     if (who === 1)
+    	content += "<td style='color:blue; font-weight:bold'>" + money[0] + "</td>" + "<td>" + money[1] + "</td>" + "<td>" + money[2] + "</td>";
+     else if (who === 2)
+     	content += "<td>" + money[0] + "</td>" + "<td style='color:blue; font-weight:bold'>" + money[1] + "</td>" + "<td>" + money[2] + "</td>";
+     else
+     	content += "<td>" + money[0] + "</td>" + "<td>" + money[1] + "</td>" + "<td style='color:blue; font-weight:bold'>" + money[2] + "</td>";
+
+    content += "</td></tr>"
+    $("table:last-child").append(content);
+  }
+
+ }); // end of draw winner
+
+ $("button#start_over").click(function(){
+
+   startNewGame();
+
+ }); // end of start new game
+
+ $("#bowler1_buy").click(function() {
+
+ 	if (money[0] >= 10) {
+    tickets.push(1);
+    justRolled = 0;
+ 	cur_jackpot += 10;
+ 	money[0]-=10;
+ 	round += 1;
+    $("span#jackpot_val").text(cur_jackpot);
+    $("#bowler1").fadeTo(150, 0.2).fadeTo(150, 1);
+    var content = "<tr class='rows'><td>" + round + "</td>";
+    if (money[0] >= 10)
+  	  content += "<td>" + money[0] + "</td>" + "<td>" + money[1] + "</td>" + "<td>" + money[2] + "</td>";
+  	else
+  	  content += "<td style='color:red;font-weight:bold'>" + money[0] + "</td>" + "<td>" + money[1] + "</td>" + "<td>" + money[2] + "</td>";	
+
+    content += "</td></tr>"
+    $("table:last-child").append(content);
+  }
+
+  else if (money[0] < 10 && money[1] < 10 && money[2] < 10) {
+      confirm("Game over! All bowlers of the league are broke");
+      var answer = prompt("Start a new game? (yes/no)");
+      if (answer == yes) {
+      	startNewGame();
+      	return;
+      }
+  }
+
+    else
+    	confirm("Oops! Billy is broke... Can't buy ticket anymore!");
+
+ }); // end of bowler1_buy
+
+ $("#bowler2_buy").click(function() {
+
+   if (money[1] >= 10) {
+ 	tickets.push(2);
+ 	  justRolled = 0;
+ 	 cur_jackpot += 10;
+ 	 money[1]-=10;
+ 	 round += 1;
+    $("span#jackpot_val").text(cur_jackpot);
+     $("#bowler2").fadeTo(150, 0.2).fadeTo(150, 1);
+    var content = "<tr class='rows'><td>" + round + "</td>";
+    if (money[1] >= 10)
+    	content += "<td>" + money[0] + "</td>" + "<td>" + money[1] + "</td>" + "<td>" + money[2] + "</td>";
+    else
+        content += "<td>" + money[0] + "</td>" + "<td style='color:red;font-weight:bold'>" + money[1] + "</td>" + "<td>" + money[2] + "</td>";
+
+    content += "</td></tr>"
+    $("table:last-child").append(content);
+   }
+    
+   else if (money[0] < 10 && money[1] < 10 && money[2] < 10) {
+      confirm("Game over! All bowlers of the league are broke");
+      var answer = prompt("Start a new game? (yes/no)");
+      if (answer == yes) {
+      	startNewGame();
+      	return;
+      }
+  }
+
+    else
+    	confirm("Oops! Sally is broke... Can't buy ticket anymore!");
+
+ }); // end of bowler2_buy
+
+ $("button#bowler3_buy").click(function() {
+
+   if (money[2] >= 10) {
+ 	tickets.push(3);
+ 	  justRolled = 0;
+     cur_jackpot += 10;
+     money[2] -= 10;
+     round += 1;
+    $("span#jackpot_val").text(cur_jackpot);
+     $("#bowler3").fadeTo(150, 0.2).fadeTo(150, 1);
+    var content = "<tr class='rows'><td>" + round + "</td>";
+    if (money[2] >= 10)
+      content += "<td>" + money[0] + "</td>" + "<td>" + money[1] + "</td>" + "<td>" + money[2] + "</td>";
+    else
+      content += "<td>" + money[0] + "</td>" + "<td>" + money[1] + "</td>" + "<td style='color:red;font-weight:bold'>" + money[2] + "</td>";
+
+   	  content += "</td></tr>"
+    $("table:last-child").append(content);
+   }
+
+  else if (money[0] < 10 && money[1] < 10 && money[2] < 10) {
+      confirm("Game over! All bowlers of the league are broke");
+      var answer = prompt("Start a new game? (yes/no)");
+      if (answer == yes) {
+      	startNewGame();
+      	return;
+      }
+  }
+
+    else
+    	confirm("Oops! Pauly is broke... Can't buy ticket anymore!");
+
+ }); // end of bowler3_buy
+
+ $("button#history").click(function() {
+    $("table").toggle(300);
+ 
+ });
+
+}); // end of document
+
+
+/*
+ * This function is called when the user wants to start a new game
+ * It will also be called when the user wins the game
+ */
+function startNewGame() {
+	cur_jackpot = 0;
+	round = 0;
+ 	$("span#jackpot_val").text(cur_jackpot);
+ 	$("tr.rows").empty();
+    who = 0;
+    tickets = [ ];
+    for (var k=0; k<money.length;k++)
+    	money[k] = 50;
+}
+
+function setStartingBalance(num) {
+
+   for (var i=0; i<3; i++)
+   	 money[i] = num;
+}
