@@ -5,6 +5,7 @@ Daocun Yang's submission for NextCapital's programming exercise. <br /><br />
 My solution makes partial use of <a href="https://github.com/BLC/bowling-api-client">this provided API</a>. My solution also doesn't make use of database or back-end technologies; instead it uses HTML5 web storage to imitate user sign up and log in. 
 
 # Live Demo
+https://bowlingjackpot.herokuapp.com
 
 # Functionalities
 <ul>
