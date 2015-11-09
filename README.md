@@ -21,7 +21,7 @@ My solution makes partial use of <a href="https://github.com/BLC/bowling-api-cli
 
 # Technologies
 <ul>
-<li>HTML & CSS</li>
+<li>HTML5 & CSS3</li>
 <li>Bootstrap</li>
 <li>JavaScript</li>
 <li>jQuery</li>
