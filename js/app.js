@@ -111,27 +111,29 @@ $('#get_bowler').click(function(){
  	$("div.display_bowlers").toggle(300);
    var content = "<h3 id='bowlers_heading'>The bowlers are:</h3><ul id='bowler_list'>";
 
-    client.getBowlers({
-    success: function(bowlers) {
-     // for (i=0; i<bowlers.length;i++) {
-      //	content += "<li>" + bowlers[i].name + "</li>"; 
       content += "<li>" + "Billy Bowler" + "</li>";
       content += "<li>" + "Sally Strike" + "</li>";
       content += "<li>" + "Pauly Pins" + "</li>";
-      content += "</ul>";
-      // }
+      content += "</ul>";   
       $(".display_bowlers").html(content);
-    //  console.log(bowlers);
+
+  /*
+    client.getBowlers({
+    success: function(bowlers) {
+      for (i=0; i<bowlers.length;i++) {
+      	content += "<li>" + bowlers[i].name + "</li>"; 
+      }
     },
     error: function(xhr) {
       console.log(JSON.parse(xhr.responseText));
     }
   }); 
+  */
 }
  else 
  	confirm("Oops! You need to login in order to play!");
 
- }); // end of get bowler
+ }); // end of get bowlers
 
 
  $("#init_balance").click(function() {
