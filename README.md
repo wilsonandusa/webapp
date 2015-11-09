@@ -2,6 +2,8 @@
 
 This is Daocun Yang's submission for NextCapital's programming exercise. <br /><br />
 
+My solution doesn't make use of database or back-end technologies. Instead it makes use of HTML5 web storage to imitate user sign up and log in. 
+
 # Live Demo
 
 # Functionalities
