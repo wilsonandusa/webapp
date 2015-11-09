@@ -2,7 +2,7 @@
 
 This is Daocun Yang's submission for NextCapital's programming exercise. <br /><br />
 
-My solution doesn't make use of database or back-end technologies. Instead it makes use of HTML5 web storage to imitate user sign up and log in. 
+My solution makes partial use of <a href="https://github.com/BLC/bowling-api-client">this provided API</a>. My solution also doesn't make use of database or back-end technologies; instead it uses of HTML5 web storage to imitate user sign up and log in. 
 
 # Live Demo
 
@@ -26,3 +26,6 @@ My solution doesn't make use of database or back-end technologies. Instead it ma
 <li>JavaScript</li>
 <li>jQuery</li>
 </ul>
+
+# Thoughts
+I enjoy the process of completing this challenge and building the game. It helps me to review some front-end knowledge, as well as familiarize myself with Git and Github (I've only used Subversion before for school projects). This exercise also leads me to realize the need to learn more about the back-end. I'm currently teaching myself Ruby on Rails, which I hope to master by the start of next summer. <br /> Thank you.  
