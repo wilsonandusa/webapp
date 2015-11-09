@@ -1,13 +1,15 @@
 
-var state = 0;				// flag indicating whether the user has logged in
+var state = 0;				      // flag indicating whether the user has logged in
 var round = 0;              // round number; initialized to 0
-var cur_jackpot = 0; 		// current jackpot
-var who; 					// who gets to roll
-var justRolled = 0;     	// flag indicating whether a bowler just rolled
+var show_hide = 0;          // a flag to determine whether to show or hide history
+var cur_jackpot = 0; 		    // current jackpot
+var who; 				           	// who gets to roll
+var justRolled = 0;     	  // flag indicating whether a bowler just rolled
 var startingBalance = 50;   // 
 var tickets = [ ];          // an array that holds all the purchased tickets; initialized to empty
-var money = [50, 50, 50];   // an array that holds the starting balance of each player; initialized to empty
+var money = [50, 50, 50];   // an array that holds the starting balance of each player; initialized to 50 by default
 
+//localStorage.clear();
 
 $(document).ready(function(){
 
@@ -70,6 +72,9 @@ $('#complete_login').click(function(){
 
      confirm("Login success!");
      $("div#loginuser").hide(300);
+     $("span#user_info").text("User: " + emailEntered);
+     $("button#logout").fadeIn();
+    /* $("button#login_div").attr("disabled","disabled"); */
   	state = 1;
 
    client.loginUser({
@@ -92,18 +97,29 @@ $('#complete_login').click(function(){
 
 }); // end of login
 
+$("button#logout").click(function() {
+   state = 0;
+   $("span#user_info").empty();
+   $("button#logout").fadeOut();
+   $("div.buy_tickets").fadeOut();
+
+}); // end of log out
+
 $('#get_bowler').click(function(){
     
  if (state === 1) {
  	$("div.display_bowlers").toggle(300);
-   var content = "<ul id='bowler_list'>";
+   var content = "<h3 id='bowlers_heading'>The bowlers are:</h3><ul id='bowler_list'>";
 
     client.getBowlers({
     success: function(bowlers) {
-      for (i=0; i<bowlers.length;i++) {
-      	content += "<li>" + bowlers[i].name + "</li>"; 
-      }
+     // for (i=0; i<bowlers.length;i++) {
+      //	content += "<li>" + bowlers[i].name + "</li>"; 
+      content += "<li>" + "Billy Bowler" + "</li>";
+      content += "<li>" + "Sally Strike" + "</li>";
+      content += "<li>" + "Pauly Pins" + "</li>";
       content += "</ul>";
+      // }
       $(".display_bowlers").html(content);
     //  console.log(bowlers);
     },
@@ -118,39 +134,44 @@ $('#get_bowler').click(function(){
  }); // end of get bowler
 
 
- $("#add_bowler").click(function() {
+ $("#init_balance").click(function() {
 
    if (state === 1) {
-    $("div.add_bowler").toggle(300);
+    $("div.initialize_balance").toggle(300);
 
     $("#complete_add_bowler").click(function() {
-		var bowler_name = $("#bowler_name").val();
-		if (bowler_name) { // also check whether the bowler already exists!
+		var num = $("#bowler_name").val();
 
-			client.createBowler ({
-		    name: bowler_name,
-		    success: function(bowler) {
-		      console.log(bowler);
-		    },
-		    error: function(xhr)  {
-		      console.log(JSON.parse(xhr.responseText));
-		    }
-		  }); // end of createBowler
-		}
+		if (isNaN(num) === false) { // also check whether the bowler already exists!
+      startingBalance = num;
+      
+      confirm("Success! The new starting balance is " + startingBalance);
+      $("div.initialize_balance").hide(300);
+      setStartingBalance(startingBalance);
+      $("td.balance").text(startingBalance);
+
+    }
+   
 		else
-			$("#add_bowler_msg").text("Please enter the name of the bowler");
+			$("#initialize_msg").text("Please enter a valid number");
 
     });
  }
  else 
  	confirm("Oops! You need to login in order to play!");
 
- }); // end of add bowler
+ }); // end of initialize balance
 
 
  $("#play_game").click(function() {
+
+   if (state === 1) {
      $("div.buy_tickets").toggle(300);
      $("span#jackpot_val").text(cur_jackpot);
+     }
+
+  else
+     confirm("Oops! You need to login in order to play!");
 
  }); // end of play game
 
@@ -221,14 +242,17 @@ $('#get_bowler').click(function(){
  $("#bowler1_buy").click(function() {
 
  	if (money[0] >= 10) {
+
     tickets.push(1);
     justRolled = 0;
- 	cur_jackpot += 10;
- 	money[0]-=10;
- 	round += 1;
+ 	  cur_jackpot += 10;
+ 	  money[0]-=10;
+ 	  round += 1;
+
     $("span#jackpot_val").text(cur_jackpot);
     $("#bowler1").fadeTo(150, 0.2).fadeTo(150, 1);
     var content = "<tr class='rows'><td>" + round + "</td>";
+
     if (money[0] >= 10)
   	  content += "<td>" + money[0] + "</td>" + "<td>" + money[1] + "</td>" + "<td>" + money[2] + "</td>";
   	else
@@ -241,9 +265,9 @@ $('#get_bowler').click(function(){
   else if (money[0] < 10 && money[1] < 10 && money[2] < 10) {
       confirm("Game over! All bowlers of the league are broke");
       var answer = prompt("Start a new game? (yes/no)");
-      if (answer == yes) {
+      if (answer == "yes") {
       	startNewGame();
-      	return;
+      //	return;
       }
   }
 
@@ -255,13 +279,15 @@ $('#get_bowler').click(function(){
  $("#bowler2_buy").click(function() {
 
    if (money[1] >= 10) {
- 	tickets.push(2);
+ 	  tickets.push(2);
  	  justRolled = 0;
- 	 cur_jackpot += 10;
- 	 money[1]-=10;
- 	 round += 1;
+ 	  cur_jackpot += 10;
+ 	  money[1]-=10;
+ 	  round += 1;
+    
     $("span#jackpot_val").text(cur_jackpot);
      $("#bowler2").fadeTo(150, 0.2).fadeTo(150, 1);
+    
     var content = "<tr class='rows'><td>" + round + "</td>";
     if (money[1] >= 10)
     	content += "<td>" + money[0] + "</td>" + "<td>" + money[1] + "</td>" + "<td>" + money[2] + "</td>";
@@ -275,7 +301,7 @@ $('#get_bowler').click(function(){
    else if (money[0] < 10 && money[1] < 10 && money[2] < 10) {
       confirm("Game over! All bowlers of the league are broke");
       var answer = prompt("Start a new game? (yes/no)");
-      if (answer == yes) {
+      if (answer === "yes") {
       	startNewGame();
       	return;
       }
@@ -309,9 +335,9 @@ $('#get_bowler').click(function(){
   else if (money[0] < 10 && money[1] < 10 && money[2] < 10) {
       confirm("Game over! All bowlers of the league are broke");
       var answer = prompt("Start a new game? (yes/no)");
-      if (answer == yes) {
+      if (answer === "yes") {
       	startNewGame();
-      	return;
+      	//return;
       }
   }
 
@@ -321,9 +347,17 @@ $('#get_bowler').click(function(){
  }); // end of bowler3_buy
 
  $("button#history").click(function() {
-    $("table").toggle(300);
- 
- });
+
+    if (show_hide == 0) {
+      show_hide = 1;
+      $("#history").text("Hide History");
+    }
+    else {
+      show_hide = 0;
+       $("#history").text("Show History");
+    }
+     $("table#history_table").toggle(300);
+ }); // end of show/hide history button
 
 }); // end of document
 
@@ -340,11 +374,14 @@ function startNewGame() {
     who = 0;
     tickets = [ ];
     for (var k=0; k<money.length;k++)
-    	money[k] = 50;
+    	money[k] = startingBalance;
 }
 
+/*
+ * This function sets the new starting balance for all bowlers
+ */
 function setStartingBalance(num) {
-
    for (var i=0; i<3; i++)
    	 money[i] = num;
 }
+
