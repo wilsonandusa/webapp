@@ -241,7 +241,7 @@ $('#get_bowler').click(function(){
   }); // end of hard mode
 
   $("button#mode_confirm").click(function() {
-     confirm("The game is now set to " + mode.toLowerCase() + " mode");
+     confirm("The game is now set to " + mode.toLowerCase() + " mode" + ". Good luck!");
      $("span#mode_info").text("Current mode: " + mode.toLowerCase());
      $("div#select_difficulty").hide(300);
   }); // end of mode confirm
