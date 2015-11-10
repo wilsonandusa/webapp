@@ -30,4 +30,4 @@ https://bowlingjackpot.herokuapp.com
 </ul>
 
 # Thoughts
-I would like to thank NextCapital for giving me this programming exercise, since I truly enjoy the process of completing this challenge and building the game. It helps me to review some front-end knowledge, as well as familiarize myself with Git and Github (I've only used Subversion before for school projects). This exercise also leads me to realize the need to learn more about the back-end. I'm currently teaching myself Ruby on Rails, which I hope to master by the start of next summer.  
+I would like to thank NextCapital for giving me this programming exercise, since I truly enjoyed the process of completing this challenge and building the game. It helps me to review some front-end knowledge, as well as familiarize myself with Git and Github (I've only used Subversion before for school projects). This exercise also leads me to realize the need to learn more about the back-end. I'm currently teaching myself Ruby on Rails, which I hope to master by the start of next summer.  
