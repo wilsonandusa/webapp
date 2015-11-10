@@ -6,7 +6,7 @@ var cur_jackpot = 0; 		    // current jackpot
 var who; 				           	// who gets to roll
 var justRolled = 0;     	  // flag indicating whether a bowler just rolled
 var startingBalance = 50;   // starting balance of all bowlers; initialized to 50
-var level = 6;              // difficulty level, represented by the number of dice; initialized to easy (1 die)
+var level = 6;              // difficulty level, represented by the number of dice; initialized to easy - 6^1 (1 die)
 var mode = "Easy";          // current mode (difficulty level); initialized to easy
 var tickets = [ ];          // an array that holds all the purchased tickets; initialized to empty
 var money = [50, 50, 50];   // an array that holds the starting balance of each player; initialized to 50 by default
@@ -185,10 +185,10 @@ $('#get_bowler').click(function(){
     $("#complete_add_bowler").click(function() {
 		var num = $("#bowler_name").val();
 
-		if (isNaN(num) === false) { // also check whether the bowler already exists!
+		if (isNaN(num) === false) {
       startingBalance = num;
       
-      confirm("Success! The new starting balance is " + startingBalance);
+      confirm("Success! The new starting balance is $" + startingBalance);
       $("div.initialize_balance").hide(300);
       setStartingBalance(startingBalance);
       $("td.balance").text(startingBalance);
@@ -224,19 +224,19 @@ $('#get_bowler').click(function(){
 
   $("button#easy").click(function() {
     mode = "Easy";
-    level = 6;
+    level = 6;  // 6^1 - the chance to get a strike is 1/6
     $("span#mode").text(mode);
   }); // end of easy mode
 
     $("button#medium").click(function() {
     mode = "Medium";
-    level = 36;
+    level = 36; // 6^2 - the chance to get a strike is 1/36
     $("span#mode").text(mode);
   }); // end of medium mode
 
   $("button#hard").click(function() {
     mode = "Hard";
-    level = 216;
+    level = 216; // 6^3 - the chance to get a strike is 1/216
     $("span#mode").text(mode);
   }); // end of hard mode
 
