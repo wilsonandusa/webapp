@@ -5,7 +5,9 @@ var show_hide = 0;          // a flag to determine whether to show or hide histo
 var cur_jackpot = 0; 		    // current jackpot
 var who; 				           	// who gets to roll
 var justRolled = 0;     	  // flag indicating whether a bowler just rolled
-var startingBalance = 50;   // 
+var startingBalance = 50;   // starting balance of all bowlers; initialized to 50
+var level = 6;              // difficulty level, represented by the number of dice; initialized to easy (1 die)
+var mode = "Easy";          // current mode (difficulty level); initialized to easy
 var tickets = [ ];          // an array that holds all the purchased tickets; initialized to empty
 var money = [50, 50, 50];   // an array that holds the starting balance of each player; initialized to 50 by default
 
@@ -17,14 +19,34 @@ var client = new BowlingApiClient('http://bowling-api.nextcapital.com/api');
 
 	$("button#signup_div").click(function() {
    		$("div#createuser").toggle(300);
-	});
+      $("div.display").hide();
+      $("div#loginuser").hide();
+      $("div.display_bowlers").hide();
+      $("div.initialize_balance").hide();
+      $("div#select_difficulty").hide();
+      $("div.buy_tickets").hide();
+	}); 
 
 	$("button#login_div").click(function() {
    		$("div#loginuser").toggle(300);
+      $("div.display").hide();
+      $("div#createuser").hide();
+      $("div.display_bowlers").hide();
+      $("div.initialize_balance").hide();
+      $("div#select_difficulty").hide();
+      $("div.buy_tickets").hide();
 	});
 
     $("button#about").click(function() {
+
    		$("div.display").toggle(300);
+      $("div#createuser").hide();
+      $("div#loginuser").hide();
+      $("div.display_bowlers").hide();
+      $("div.initialize_balance").hide();
+      $("div#select_difficulty").hide();
+      $("div.buy_tickets").hide();
+
 	});
 
    $("#complete_signup").click(function(){ 
@@ -46,12 +68,13 @@ var client = new BowlingApiClient('http://bowling-api.nextcapital.com/api');
 
     $("div#createuser").hide(300);
     confirm("Success!");
+    $("div#loginuser").show(300);
   	
   	client.createUser({
     email: email_text,
     password: psword_text,
     success: function(user) {
-     //console.log(user);
+     console.log(user);
      //alert("Thank you!");
     },
     error: function(xhr)  {
@@ -73,6 +96,7 @@ $('#complete_login').click(function(){
      confirm("Login success!");
      $("div#loginuser").hide(300);
      $("span#user_info").text("User: " + emailEntered);
+     $("span#mode_info").text("Current mode: easy" );
      $("button#logout").fadeIn();
     /* $("button#login_div").attr("disabled","disabled"); */
   	state = 1;
@@ -100,8 +124,12 @@ $('#complete_login').click(function(){
 $("button#logout").click(function() {
    state = 0;
    $("span#user_info").empty();
+   $("span#mode_info").empty();
    $("button#logout").fadeOut();
    $("div.buy_tickets").fadeOut();
+   $("div.initialize_balance").fadeOut();
+   $("div#select_difficulty").fadeOut();
+   $("div.display_bowlers").fadeOut();
 
 }); // end of log out
 
@@ -109,6 +137,13 @@ $('#get_bowler').click(function(){
     
  if (state === 1) {
  	$("div.display_bowlers").toggle(300);
+      $("div.display").hide();
+      $("div#createuser").hide();
+      $("div#loginuser").hide();
+      $("div.initialize_balance").hide();
+      $("div#select_difficulty").hide();
+      $("div.buy_tickets").hide();  
+
    var content = "<h3 id='bowlers_heading'>The bowlers are:</h3><ul id='bowler_list'>";
 
       content += "<li>" + "Billy Bowler" + "</li>";
@@ -131,7 +166,7 @@ $('#get_bowler').click(function(){
   */
 }
  else 
- 	confirm("Oops! You need to login in order to play!");
+ 	confirm("Oops! Don't forget to log in :)");
 
  }); // end of get bowlers
 
@@ -140,6 +175,12 @@ $('#get_bowler').click(function(){
 
    if (state === 1) {
     $("div.initialize_balance").toggle(300);
+      $("div.display").hide();
+      $("div#createuser").hide();
+      $("div#loginuser").hide();
+      $("div.display_bowlers").hide();
+      $("div#select_difficulty").hide();
+      $("div.buy_tickets").hide();    
 
     $("#complete_add_bowler").click(function() {
 		var num = $("#bowler_name").val();
@@ -160,26 +201,73 @@ $('#get_bowler').click(function(){
     });
  }
  else 
- 	confirm("Oops! You need to login in order to play!");
+ 	confirm("Oops! Don't forget to log in :)");
 
  }); // end of initialize balance
+
+  $("button#select_mode").click(function() {
+
+      if (state === 1) {
+
+        $("div#select_difficulty").toggle(300);
+        $("span#mode").text(mode);
+        $("div#createuser").hide();
+        $("div.display").hide();
+        $("div#loginuser").hide();
+        $("div.display_bowlers").hide();
+        $("div.initialize_balance").hide();
+        $("div.buy_tickets").hide();
+      }
+      else
+        confirm("Oops! Don't forget to log in :)");
+  }); // end of select mode
+
+  $("button#easy").click(function() {
+    mode = "Easy";
+    level = 6;
+    $("span#mode").text(mode);
+  }); // end of easy mode
+
+    $("button#medium").click(function() {
+    mode = "Medium";
+    level = 36;
+    $("span#mode").text(mode);
+  }); // end of medium mode
+
+  $("button#hard").click(function() {
+    mode = "Hard";
+    level = 216;
+    $("span#mode").text(mode);
+  }); // end of hard mode
+
+  $("button#mode_confirm").click(function() {
+     confirm("The game is now set to " + mode.toLowerCase() + " mode");
+     $("span#mode_info").text("Current mode: " + mode.toLowerCase());
+     $("div#select_difficulty").hide(300);
+  }); // end of mode confirm
 
 
  $("#play_game").click(function() {
 
    if (state === 1) {
      $("div.buy_tickets").toggle(300);
+      $("div.display").hide();
+      $("div#createuser").hide();
+      $("div#loginuser").hide();
+      $("div.display_bowlers").hide();
+      $("div.initialize_balance").hide();
+      $("div#select_difficulty").hide(); 
      $("span#jackpot_val").text(cur_jackpot);
      }
 
   else
-     confirm("Oops! You need to login in order to play!");
+     confirm("Oops! Don't forget to log in :)");
 
  }); // end of play game
 
 
  $("#draw_winner").click(function() {
-
+  // confirm(level);
  	if (cur_jackpot === 0) {
  		$("h3#jackpot").fadeTo(300, 0.2).fadeTo(300, 1).fadeTo(300, 0.2).fadeTo(300, 1).fadeTo(300, 0.2).fadeTo(300, 1);
  		confirm("Please first buy a ticket");
@@ -189,7 +277,7 @@ $('#get_bowler').click(function(){
    		confirm("At least 3 tickets need to be bought"); 
    
    else if (justRolled === 1)
-   	  confirm("Please buy a new ticket to proceed!");  
+   	  confirm("Please buy a new ticket to proceed");  
 
   else {
 
@@ -201,11 +289,14 @@ $('#get_bowler').click(function(){
       confirm("Bowler " + who + " gets to roll!");    
 
       // is the bowler lucky enough to get the strike? 
-      var strike = Math.ceil((Math.random())*6);
-      if (strike === 6) {
+      var dice_num = Math.ceil((Math.random())*level);
+      if ( dice_num === 6) {
       	 confirm("Strike!!! " + "Bowler " + who + " wins!");
-      	 startNewGame();
-      	 return;
+        var answer = prompt("Start a new game? (yes/no)");
+        if (answer == "yes") {
+        startNewGame();
+       }
+        return;
       }
 
       // if no, then randomly determine what fraction of the jackpot the bowler wins

@@ -4,12 +4,17 @@ html {
 
 body {
 
-	/*background-color: yellow; */
+	background-color: yellow; 
+  /*
+  height:100%;
+*/
+
+/*
 	background: -webkit-linear-gradient(yellow, #FE2E2E); /* For Safari 5.1 to 6.0 */
-    background: -o-linear-gradient(yellow, #FE2E2E); /* For Opera 11.1 to 12.0 */
-    background: -moz-linear-gradient(yellow, #FE2E2E); /* For Firefox 3.6 to 15 */
-    background: linear-gradient(yellow, yellow); /* Standard syntax (must be last) */
-   /*
+  /*
+    background: -o-linear-gradient(yellow, #FE2E2E);
+    background: -moz-linear-gradient(yellow, #FE2E2E); 
+    background: linear-gradient(yellow, yellow); 
     background-repeat: no-repeat;
     */
 }
@@ -30,6 +35,10 @@ li {
 #user_info {
 	font-size: 1.1em;
 	float:right;
+}
+
+#mode_info {
+  font-size:1.1em;
 }
 
 #bowlers_heading {
@@ -59,28 +68,6 @@ li {
    line-height: 25px;
 
 }
-
-.display_lotte {
-   display: none;
-   position: relative;
-   left:14%;
-   margin-top:2%;
-   height:20%;
-   width:70%;
-   background-color: white;
-   border-radius: 15px;
-   line-height: 25px;
-
-}
-
-
-/*
-.display_lotteries  {
-
-	height:20%;
-	width:70%;
-	background-color: white;
-} */
 
 #intro {
 	padding: 10px;
@@ -119,6 +106,18 @@ li {
    width:40%;
 }
 
+#select_difficulty {
+   display:none;
+   position: relative;
+   left:28%;
+   margin-top:2%;
+   height:20%;
+   width:45%;
+   background-color: white;
+   border-radius: 15px;
+   line-height: 25px;
+
+}
 
 .buy_tickets {
     line-height: 25px;
@@ -128,6 +127,7 @@ li {
 #bowler_list {
 	list-style: none;
 	padding-top: 10px;
+  font-family: "Comic Sans MS", cursive, sans-serif;
 }
 
 span.players {
@@ -149,6 +149,10 @@ tr.rows, tr.row0 {
 
 table#history_table {
 	display:none;
+}
+
+#mode_confirm {
+  margin-bottom: 12px;
 }
 
 /* Below is the animation related to title words */

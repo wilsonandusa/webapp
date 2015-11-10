@@ -14,6 +14,7 @@
 
 <body>
 <span id="user_info"></span>
+<span id="mode_info"></span>
 <div class="index_text" align="center">
   <br />
 	<h1 id="title" class="animated moving">Welcome to Bowling Jackpot!</h1>
@@ -22,6 +23,7 @@
 	<button id="login_div" type="button" class="btn btn-success">Log In</button>
 	<button id="get_bowler" type="button" class="btn btn-danger">Get Bowlers</button>
 	<button id="init_balance" type="button" class="btn btn-primary">Initialize Balance</button>
+  <button id="select_mode" type="button" class="btn btn-warning">Select Difficulty</button>
 	<button id="play_game" type="button" class="btn btn-info">Play Game!</button>
   <button id="logout" type="button" class="btn btn-warning">Log Out</button>
 </div>
@@ -65,7 +67,7 @@
 
   <div class="display">
     <span class="glyphicon glyphicon-hand-right" id="icon"></span><br />
- 	<p id="intro">The app will be a simple way for a bowling league to track a progressive jackpot. Bowlers in the league can buy tickets to enter the drawing. The default starting balance for each bowler is <strong>$50</strong> dollars, which can be changed by clicking on the <mark>initialize balance</mark> button. All tickets cost <strong>$10</strong> dollars, and the proceeds go into the jackpot. After  <strong>at least three</strong> tickets are bought, one ticket is drawn at random. The owner of that ticket gets to roll the dice (yes, there's only one dice, to make it not so hard to win) once. If they get a strike, they win the entire pot. Otherwise, they win a fraction of the pot, and the remaining pot rolls over into the next drawing.<br /><br /> <span id="reminder">Please don't forget to log in before you enjoy the game! :)</span></p>
+ 	<p id="intro">This app is a simple way for a bowling league to track a progressive jackpot. The three bowlers can buy tickets to enter the drawing. The default starting balance for all bowlers is <strong>$50</strong> dollars, which can be changed by clicking on the <mark>Initialize Balance</mark> button after logging in. All tickets cost <strong>$10</strong> dollars, and the proceeds go into the jackpot. After  <strong>at least three</strong> tickets are bought, one ticket is drawn at random. The owner of that ticket gets to roll the dice once. If the numbers on both dice are six, they get a strike, and win the entire pot. Otherwise, they win a fraction of the pot, and the remaining pot rolls over into the next drawing.<br /><br /> The game is in <strong>easy</strong> mode by default, but can be switched to <strong>medium</strong> or <strong>hard</strong> mode by clicking on the <mark>Select Difficulty</mark> button and select the according level.<br /><br /> <span id="reminder">Please don't forget to log in before you enjoy the game! :)</span></p>
 
   </div>
 
@@ -84,6 +86,17 @@
     <br />
     <button id="complete_add_bowler" type="button" class="btn btn-default">Submit</button>
   </form>
+  </div>
+
+  <div id="select_difficulty">
+    <div align="center"><br />
+      <h3>Current Mode: <span id="mode"></span><h3>
+        <button id="easy" type="button" class="btn btn-success">Easy</button>
+        <button id="medium" type="button" class="btn btn-warning">Medium</button>
+        <button id="hard" type="button" class="btn btn-danger">Hard</button>
+        <br /><br />
+        <button id="mode_confirm" type="button" class="btn btn-default">Confirm</button>
+    </div>
   </div>
 
   <div class="buy_tickets">
