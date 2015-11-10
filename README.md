@@ -12,7 +12,8 @@ https://bowlingjackpot.herokuapp.com
 <li>Sign Up</li>
 <li>Log In</li>
 <li>Log Out</li>
-<li>Set starting balance for bowlers</li>
+<li>Set starting balance for bowlers (default to $50)</li>
+<li>Choose difficulty (default to easy)</li>
 <li>View current jackpot</li>
 <li>Let bowlers buy tickets for the current jackpot</li>
 <li>Draw a winning ticket for a jackpot</li>
